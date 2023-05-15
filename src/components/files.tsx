@@ -1,19 +1,12 @@
-import { downloadFile, getAllFile } from "@/services/apiCalls";
-import { useUser } from "@clerk/nextjs";
-import React, { useState, useEffect } from "react";
+import { downloadFile, getAllFile } from "../services/apiCalls";
+import { useState } from "react";
 import { MdOutlineFileDownload, MdOutlineRefresh } from "react-icons/md";
 import { ToastContainer, toast } from "react-toastify";
+import { getItemFromStorage } from "../lib/localStorage";
 
 function Files() {
-  const { user } = useUser();
   const [userId, setUserId] = useState<string>("");
-  const [files, setFiles] = useState<any[]>([]);
-
-  useEffect(() => {
-    if (user) {
-      setUserId(user?.id);
-    }
-  }, [user]);
+  const [files, setFiles] = useState([]);
 
   const filterName = (str: string) => {
     return str.split("/")[1].split("-").splice(1).join("-");
@@ -50,10 +43,10 @@ function Files() {
     }
   };
 
-  const handleDownloadFile = async (data: any) => {
+  const handleDownloadFile = async (data) => {
     toast.success("Downloading will start shortly");
     const key = data.split("/")[1];
-    const response = await downloadFile(userId, key);
+    const response = await downloadFile(key);
     const link = document.createElement("a");
     link.href = response.data.url;
     link.download = key;
@@ -89,7 +82,7 @@ function Files() {
             </h1>
           </div>
         ) : (
-          files.map((file: any, id: number) => (
+          files.map((file, id: number) => (
             <div
               key={id}
               className="border-b border-slate-300/20 py-4 px-12 flex items-center justify-between hover:bg-white/10 duration-150"

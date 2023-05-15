@@ -1,17 +1,29 @@
 import axios from "axios";
+import { getItemFromStorage } from "../lib/localStorage";
 
-export const uploadFile = (params: any) => {
+const token = getItemFromStorage()
+
+export const uploadFile = (params) => {
     return axios.post(`http://localhost:5000/api/file/upload`, params, {
         headers: {
-            'Content-Type': 'multipart/form-data'
+            'Content-Type': 'multipart/form-data',
+            Authorization: `${token}`
         }
     });
 };
 
-export const getAllFile = (userId: any) => {
-    return axios.get(`http://localhost:5000/api/file/all/${userId}`);
+export const getAllFile = ( userId) => {
+    return axios.get(`http://localhost:5000/api/file/all/${userId}`, {
+        headers: {
+            Authorization: `${token}`
+        }
+    });
 };
 
-export const downloadFile = (userId: any,key: any) => {
-  return axios.get(`http://localhost:5000/api/file/download/${userId}/${key}`);
+export const downloadFile = ( key) => {
+    return axios.get(`http://localhost:5000/api/file/download/${key}`,{
+        headers: {
+            Authorization: `${token}`
+        }
+    });
 };
