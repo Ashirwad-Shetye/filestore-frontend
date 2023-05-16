@@ -111,7 +111,7 @@ function Files() {
             </div>
           )
         ) : (
-          files.map((file, id: number) => (
+          files.map((file: any, id: number) => (
             <div
               key={id}
               className="border-b border-slate-300/20 py-4 px-12 flex items-center justify-between hover:bg-white/10 duration-150"
