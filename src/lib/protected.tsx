@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from "react-router-dom";
-import { getItemFromStorage } from "./localStorage";
+import { getItemFromStorage } from "./storage";
 
 function PrivateRoute() {
   const token = getItemFromStorage();

@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from "react";
-import { clearItemFromStorage } from "../lib/localStorage";
+import { clearItemFromStorage } from "../lib/storage";
 
 interface Props {
   loggedIn: boolean;
@@ -9,7 +9,8 @@ interface Props {
 function Nav({ loggedIn, setLoggedIn }: Props) {
   const handleSignOut = (e: React.SyntheticEvent) => {
     e.preventDefault();
-    clearItemFromStorage();
+    clearItemFromStorage("token");
+    clearItemFromStorage("userId");
     setLoggedIn(false);
   };
   return (

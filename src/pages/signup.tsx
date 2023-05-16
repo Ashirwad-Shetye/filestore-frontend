@@ -1,6 +1,7 @@
 import { GoogleLogin } from "@react-oauth/google";
 import { Dispatch, SetStateAction } from "react";
-import { setItemToStorage } from "../lib/localStorage";
+import { setItemToStorage } from "../lib/storage";
+import jwt_decode from "jwt-decode";
 
 interface Props {
   setLoggedIn: Dispatch<SetStateAction<boolean>>;
@@ -21,9 +22,10 @@ function SignUp({ setLoggedIn }: Props) {
         <div className="flex h-24 items-center justify-center">
           <GoogleLogin
             onSuccess={(credentialResponse) => {
-              setItemToStorage(credentialResponse.credential);
+              setItemToStorage("token", credentialResponse.credential);
               setLoggedIn(true);
-              console.log(credentialResponse.credential);
+              const token: any = jwt_decode(`${credentialResponse.credential}`);
+              setItemToStorage("userId", token.sub);
             }}
             theme="filled_black"
             shape="pill"

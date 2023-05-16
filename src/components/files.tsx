@@ -1,12 +1,34 @@
 import { downloadFile, getAllFile } from "../services/apiCalls";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { MdOutlineFileDownload, MdOutlineRefresh } from "react-icons/md";
 import { ToastContainer, toast } from "react-toastify";
-import { getItemFromStorage } from "../lib/localStorage";
+import "react-toastify/dist/ReactToastify.css";
 
 function Files() {
-  const [userId, setUserId] = useState<string>("");
   const [files, setFiles] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const getAllData = async () => {
+      setLoading(true);
+      try {
+        const response = await getAllFile();
+        if (response.data.response.KeyCount === 0) {
+          setSpin(false);
+          setLoading(false);
+          return toast("No files found");
+        } else {
+          const s3Files = response.data.response.Contents.reverse();
+          setFiles(s3Files);
+          setSpin(false);
+          setLoading(false);
+        }
+      } catch (err) {
+        toast.error("There was an error fetching files");
+      }
+    };
+    getAllData();
+  }, []);
 
   const filterName = (str: string) => {
     return str.split("/")[1].split("-").splice(1).join("-");
@@ -32,14 +54,17 @@ function Files() {
 
   const handleRefresh = async () => {
     setSpin(true);
-    const response = await getAllFile(userId);
+    setLoading(true);
+    const response = await getAllFile();
     if (response.data.response.KeyCount === 0) {
       setSpin(false);
+      setLoading(false);
       return toast("No files found");
     } else {
       const s3Files = response.data.response.Contents.reverse();
       setFiles(s3Files);
       setSpin(false);
+      setLoading(false);
     }
   };
 
@@ -59,7 +84,7 @@ function Files() {
 
   return (
     <div className="relative bg-white/5 border  border-slate-300 text-white rounded-lg w-5/6">
-      <ToastContainer position="top-right" theme="dark" />
+      <ToastContainer position="top-right" theme="dark" autoClose={2000} />
       <div className="bg-white/10 h-16 items-center flex  justify-between">
         <h1 className="pl-12 text-xl font-semibold py-2">Title</h1>
         <button
@@ -76,11 +101,15 @@ function Files() {
       </div>
       <div className="max-h-80 overflow-y-scroll overflow-x-hidden">
         {!files ? (
-          <div className="border-b border-slate-300/20 py-4 px-12 flex items-center justify-center">
-            <h1 className="flex space-x-12">
-              Try refreshing files using the Refresh button
-            </h1>
-          </div>
+          loading ? (
+            <h1>Loading your files...</h1>
+          ) : (
+            <div className="border-b border-slate-300/20 py-4 px-12 flex items-center justify-center">
+              <h1 className="flex space-x-12">
+                Try refreshing files using the Refresh button
+              </h1>
+            </div>
+          )
         ) : (
           files.map((file, id: number) => (
             <div

@@ -1,7 +1,7 @@
-const defaultStorage = window.localStorage;
-export const getItemFromStorage = (storage = defaultStorage) => storage.getItem("token");
-export const setItemToStorage = (value, storage=defaultStorage) => storage.setItem("token",value)
-export const clearItemFromStorage = (storage = defaultStorage) => storage.removeItem("token")
+const defaultStorage = window.sessionStorage;
+export const getItemFromStorage = (key,storage = defaultStorage) => storage.getItem(key);
+export const setItemToStorage = (key, value,  storage=defaultStorage) => storage.setItem(key,value)
+export const clearItemFromStorage = (key, storage = defaultStorage) => storage.removeItem(key)
 
 const authHeaderKeys = ["platform", "Authorization"];
 

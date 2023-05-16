@@ -1,7 +1,9 @@
-import { useRef, ChangeEvent, useState } from "react";
+import { useRef, ChangeEvent } from "react";
 import { GoCloudUpload } from "react-icons/go";
-import { uploadFile } from "../services/apiCalls";
+import { getAllFile, uploadFile } from "../services/apiCalls";
 import { ToastContainer, toast } from "react-toastify";
+import { getItemFromStorage } from "../lib/storage";
+import "react-toastify/dist/ReactToastify.css";
 
 function Uploader() {
   const fileRef: any = useRef();
@@ -12,9 +14,11 @@ function Uploader() {
       return null;
     }
     const file = e.target.files[0];
-    const response = await uploadFile({ file });
+    const userId = getItemFromStorage("userId");
+    const response = await uploadFile({ file, userId });
     if (response.status === 201) {
       toast.success(response.data.message);
+      getAllFile();
     }
   };
 
@@ -25,7 +29,7 @@ function Uploader() {
           event.preventDefault();
           fileRef.current.click();
         }}
-        className="bg-white/20 cursor-pointer w-[45%] min-w-[20rem] h-48 flex items-center justify-center rounded-lg 
+        className="bg-white/20 cursor-pointer mt-20 w-[45%] min-w-[20rem] h-48 flex items-center justify-center rounded-lg 
                     border-2 border-dashed hover:bg-white/30 hover:scale-105 duration-150"
       >
         <div className="text-center flex flex-col items-center space-y-2">
@@ -40,7 +44,7 @@ function Uploader() {
         onChange={handleFileUpload}
         className="hidden"
       />
-      <ToastContainer position="top-right" theme="dark" />
+      <ToastContainer position="top-right" theme="dark" autoClose={2000} />
     </>
   );
 }

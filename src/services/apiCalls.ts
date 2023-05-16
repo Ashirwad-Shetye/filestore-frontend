@@ -1,29 +1,31 @@
 import axios from "axios";
-import { getItemFromStorage } from "../lib/localStorage";
+import { getItemFromStorage } from "../lib/storage";
 
-const token = getItemFromStorage()
+const token = getItemFromStorage("token")
+const userId = getItemFromStorage("userId")
 
 export const uploadFile = (params) => {
-    return axios.post(`http://localhost:5000/api/file/upload`, params, {
+    return axios.post(`${import.meta.env.VITE_BASE_URL}/upload`, params, {
         headers: {
             'Content-Type': 'multipart/form-data',
-            Authorization: `${token}`
+            Authorization: `Bearer ${token}`
         }
     });
 };
 
-export const getAllFile = ( userId) => {
-    return axios.get(`http://localhost:5000/api/file/all/${userId}`, {
+export const getAllFile = async() => {
+    const userId = await getItemFromStorage("userId");
+    return axios.get(`${import.meta.env.VITE_BASE_URL}/all/${userId}`, {
         headers: {
-            Authorization: `${token}`
+            Authorization: `Bearer ${token}`
         }
     });
 };
 
-export const downloadFile = ( key) => {
-    return axios.get(`http://localhost:5000/api/file/download/${key}`,{
+export const downloadFile = (key) => {
+    return axios.get(`${import.meta.env.VITE_BASE_URL}/download/${userId}/${key}`,{
         headers: {
-            Authorization: `${token}`
+            Authorization: `Bearer ${token}`
         }
     });
 };
