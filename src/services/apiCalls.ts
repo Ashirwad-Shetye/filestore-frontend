@@ -2,7 +2,6 @@ import axios from "axios";
 import { getItemFromStorage } from "../lib/storage";
 
 const token = getItemFromStorage("token")
-const userId = getItemFromStorage("userId")
 
 export const uploadFile = (params) => {
     return axios.post(`${import.meta.env.VITE_BASE_URL}/upload`, params, {
@@ -13,7 +12,7 @@ export const uploadFile = (params) => {
     });
 };
 
-export const getAllFile = async() => {
+export const getAllFile = async () => {
     const userId = await getItemFromStorage("userId");
     return axios.get(`${import.meta.env.VITE_BASE_URL}/all/${userId}`, {
         headers: {
@@ -22,7 +21,8 @@ export const getAllFile = async() => {
     });
 };
 
-export const downloadFile = (key) => {
+export const downloadFile = async(key) => {
+    const userId = await getItemFromStorage("userId");
     return axios.get(`${import.meta.env.VITE_BASE_URL}/download/${userId}/${key}`,{
         headers: {
             Authorization: `Bearer ${token}`
